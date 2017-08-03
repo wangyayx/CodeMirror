@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CodeMirror: Theme Demo</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/codemirror.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="js/codemirror.js"></script>
+<script src="js/javascript.js"></script>
+
+<style type="text/css">
+.CodeMirror {border: 1px solid black; font-size:13px}
+</style>
+</head>
+<body>
+<div id="page">
+<a href="#" onclick=document.execCommand("selectAll")>全选</a>
+
+
+<div id="content">
+<input class="shuru" id="searchstr" type="text" name="searchstr">
+    <input class="button" id="search_btn" type="submit" value="Search">
+	
+<textarea id="code" name="code" style="display: none;">
+撒打扫打扫打扫打扫打扫打扫打扫打总总扫打扫的
+</textarea>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+		<tr>
+			<th width="20%">部门性质</th>
+			<th width="18%">部门</th>
+			<th width="15%">职位</th>
+			<th width="17%">姓名</th>
+			<th width="30%">联系方式</th>
+		</tr>
+		<tbody>
+			<tr>
+				<td><p>总裁</p></td>
+				<td><p>总裁</p></td>
+				<td><p>总裁</p></td>
+				<td><p>邓小波</p></td>
+              <td><a href="tel:18017085859"><p>18017085859</p></a></td>
+			</tr>	
+            <tr>
+				<td rowspan="10"><p>集团总裁直管人员（10）</p></td>
+				<td><p>战略客户总部</p></td>
+				<td><p>首席市场官</p></td>
+				<td><p>俞翠娴</p></td>
+              <td><a href="tel:18017085859"><p>18017085859</p></a></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+</div>
+<script>
+  var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    lineNumbers: true,
+    styleActiveLine: true,
+    matchBrackets: true
+  });
+  
+  
+  
+  $(function(){ 
+    var i = 0; 
+    var sCurText; 
+    function highlight(){ 
+        clearSelection();//先清空一下上次高亮显示的内容； 
+
+        var flag = 0; 
+        var bStart = true;
+        $('#tip').text(''); 
+        $('#tip').hide(); 
+        var searchText = $('#searchstr').val(); 
+        var _searchTop = $('#searchstr').offset().top+30; 
+        var _searchLeft = $('#searchstr').offset().left; 
+        if($.trim(searchText)==""){
+            return; 
+        } 
+        //查找匹配 
+        var searchText = $('#searchstr').val();//获取你输入的关键字； 
+        var regExp = new RegExp(searchText, 'g');//创建正则表达式，g表示全局的，如果不用g， 
+                  //则查找到第一个就不会继续向下查找了； 
+        var content = $("#content").text(); 
+        if (!regExp.test(content)) { 
+            return; 
+        } else { 
+            if (sCurText != searchText) { 
+                i = 0; 
+                sCurText = searchText; 
+             } 
+        } 
+		
+		 var html = $("#page").html(); 
+         //将找到的关键字替换，加上highlight属性； 
+         var newHtml = html.replace(regExp, '<span class="highlight">'+searchText+'</span>'); 
+			$("#page").html(newHtml);//更新； 
+			flag = 1; 
+       
+
+        //定位并提示信息 
+        if (flag == 1) {
+            
+            $("html, body").animate({ scrollTop: _top - 50 }); 
+            i++; 
+            if (i > $(".highlight").size() - 1) { 
+                i = 0; 
+            } 
+        } 
+    } 
+	
+	
+	
+	$('#search_btn').click(highlight);//点击search时，执行highlight函数； 
+	$('#searchstr').keydown(function (e) {
+		var key = e.which;
+		if (key == 13) highlight();
+	}) 
+  
+}); 
+
+
+function clearSelection(){
+	$('body').each(function(){ 
+		//找到所有highlight属性的元素； 
+		$(this).find('.highlight').each(function(){ 
+			$(this).replaceWith($(this).html());//将他们的属性去掉； 
+		}); 
+	});
+}
+</script>
+
+</body>
+
+
+</html>
